@@ -19,15 +19,21 @@ class SocialMediaApiService
 
     def fetch_api(api)
       resp = Net::HTTP.get_response(URI(api[:uri]))
-      resp.code == "200" ? JSON.parse(resp.body) : raise_bad_response
+      resp.code == "200" ? JSON.parse(resp.body) : raise_bad_response(api[:name])
     rescue JSON::ParserError => error
-      raise_bad_response
+      raise_bad_response(api[:name])
     end
 
-    def raise_bad_response
-      raise(BadResponseError.new('api returned an invalid response'))
+    def raise_bad_response(api_name)
+      raise(BadResponseError.new('api returned an invalid response', api_name))
     end
   end
 
-  class BadResponseError < StandardError; end
+  class BadResponseError < StandardError
+    attr_reader :api_name
+    def initialize(message, api_name)
+      super(message)
+      @api_name = api_name
+    end
+  end
 end

@@ -66,6 +66,13 @@ RSpec.describe SocialMediaApiService, :type => :service do
     rescue SocialMediaApiService::BadResponseError => error
       expect(error.message).to eq('api returned an invalid response')
     end
+
+    it "contains the failed api name in the SocialMediaApiService::BadResponseError error" do
+      SocialMediaApiService.index
+
+    rescue SocialMediaApiService::BadResponseError => error
+      expect(error.api_name).to eq(:facebook)
+    end
   end
 
   context "when the index class method is called and an endpoint returns a 500 status code" do
@@ -85,6 +92,13 @@ RSpec.describe SocialMediaApiService, :type => :service do
     rescue SocialMediaApiService::BadResponseError => error
       expect(error.message).to eq('api returned an invalid response')
     end
+
+    it "contains the failed api name in the SocialMediaApiService::BadResponseError error" do
+      SocialMediaApiService.index
+
+    rescue SocialMediaApiService::BadResponseError => error
+      expect(error.api_name).to eq(:facebook)
+    end
   end
 
   context "when the index class method is called and an endpoint returns invalid JSON" do
@@ -103,6 +117,13 @@ RSpec.describe SocialMediaApiService, :type => :service do
 
     rescue SocialMediaApiService::BadResponseError => error
       expect(error.message).to eq('api returned an invalid response')
+    end
+
+    it "contains the failed api name in the SocialMediaApiService::BadResponseError error" do
+      SocialMediaApiService.index
+
+    rescue SocialMediaApiService::BadResponseError => error
+      expect(error.api_name).to eq(:facebook)
     end
   end
 
