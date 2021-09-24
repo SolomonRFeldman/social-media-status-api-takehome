@@ -5,6 +5,9 @@ RSpec.describe SocialMediaApiService, :type => :service do
   let(:valid_facebook_data) { [{"name" => "test","status" => "hello world"}, {"name" => "john","status" => "dough"}] }
   let(:valid_instagram_data) { [{"username" => "picture","tweet" => "hello world"}, {"username" => "john","picture" => "dough"}] }
 
+  # extra '}' added at the end
+  let(:invalid_facebook_json_response) { '[{"username":"test","tweet":"hello world"}, {"username":"john","tweet":"dough"}}]' }
+
   before(:each) do
     stub_request(:get, /twitter/)
       .with(headers: { 'Accept'=>'*/*','User-Agent'=>'Ruby' })
@@ -69,6 +72,19 @@ RSpec.describe SocialMediaApiService, :type => :service do
       expect{SocialMediaApiService.index}.to raise_error(SocialMediaApiService::BadResponseError)
     end
   end
+
+  context "when the index class method is called and an endpoint returns invalid JSON" do
+    before do
+      stub_request(:get, /facebook/)
+        .with(headers: { 'Accept'=>'*/*','User-Agent'=>'Ruby' })
+        .to_return(status: 200, body: invalid_facebook_json_response, headers: {})
+    end
+
+    it "raises a SocialMediaApiService::BadResponseError error" do
+      expect{SocialMediaApiService.index}.to raise_error(SocialMediaApiService::BadResponseError)
+    end
+  end
+
 
 
 end

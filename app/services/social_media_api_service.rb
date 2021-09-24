@@ -12,6 +12,8 @@ class SocialMediaApiService
       SOCIAL_MEDIA_APIS.each do |api|
         api_resp = Net::HTTP.get_response(URI(api[:uri]))
         response[api[:name]] = parse_response(api_resp)
+      rescue JSON::ParserError => error
+        raise(BadResponseError.new) 
       end
       response
     end
