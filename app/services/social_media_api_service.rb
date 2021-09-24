@@ -10,18 +10,22 @@ class SocialMediaApiService
     def index
       response = {}
       SOCIAL_MEDIA_APIS.each do |api|
-        api_resp = Net::HTTP.get_response(URI(api[:uri]))
-        response[api[:name]] = parse_response(api_resp)
-      rescue JSON::ParserError => error
-        raise(BadResponseError.new) 
+        response[api[:name]] = fetch_api(api)
       end
       response
     end
 
     private
 
-    def parse_response(resp)
-      resp.code == "200" ? JSON.parse(resp.body) : raise(BadResponseError.new)
+    def fetch_api(api)
+      resp = Net::HTTP.get_response(URI(api[:uri]))
+      resp.code == "200" ? JSON.parse(resp.body) : raise_bad_response
+    rescue JSON::ParserError => error
+      raise_bad_response
+    end
+
+    def raise_bad_response
+      raise(BadResponseError.new('api returned an invalid response'))
     end
   end
 
