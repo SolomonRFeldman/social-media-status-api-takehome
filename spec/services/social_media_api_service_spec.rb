@@ -45,4 +45,30 @@ RSpec.describe SocialMediaApiService, :type => :service do
       expect(@response[:instagram]).to eq(valid_instagram_data)
     end
   end
+
+  context "when the index class method is called and an api request times out" do
+    before do
+      stub_request(:get, /facebook/)
+        .with(headers: { 'Accept'=>'*/*','User-Agent'=>'Ruby' })
+        .to_return(status: 408, body: '', headers: {})
+    end
+
+    it "raises a SocialMediaApiService::BadResponseError error" do
+      expect{SocialMediaApiService.index}.to raise_error(SocialMediaApiService::BadResponseError)
+    end
+  end
+
+  context "when the index class method is called and an endpoint returns a 500 status code" do
+    before do
+      stub_request(:get, /facebook/)
+        .with(headers: { 'Accept'=>'*/*','User-Agent'=>'Ruby' })
+        .to_return(status: 500, body: '', headers: {})
+    end
+
+    it "raises a SocialMediaApiService::BadResponseError error" do
+      expect{SocialMediaApiService.index}.to raise_error(SocialMediaApiService::BadResponseError)
+    end
+  end
+
+
 end
