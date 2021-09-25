@@ -54,4 +54,29 @@ describe 'Applicaton Features', :type => :feature do
 
   end
 
+  context "when index is requested with a bad API call" do
+    before do
+      stub_request(:get, /facebook/)
+        .with(headers: { 'Accept'=>'*/*','User-Agent'=>'Ruby' })
+        .to_return(
+          status: 500, 
+          body: '', 
+          headers: {}
+        )
+      page.driver.submit :get, '/', {}
+    end
+
+    it "returns a 500 code" do
+      expect(page.status_code).to eq(500)
+    end
+
+    it "returns a JSON error response specifying which api failed" do
+      parsed_data = JSON.parse(page.body)
+      expect(parsed_data["error"]["api_name"]).to eq("facebook")
+      expect(parsed_data["error"]["message"]).to eq('api returned an invalid response')
+      expect(parsed_data["error"]["type"]).to eq('invalid response')
+    end
+
+  end
+
 end
