@@ -25,12 +25,22 @@ class SocialMediaApiService
   end
 
   def fetch_api(api)
-    resp = Net::HTTP.get_response(URI(api.uri))
+    uri = URI(api.uri)
+
+    request = Net::HTTP.new(uri.host, uri.port)
+    request.read_timeout = 5.0 / 3
+    request.max_retries = 0
+    request.use_ssl = true
+ 
+    resp = request.request_get(uri.path)
+
     raise BadStatusError.new unless resp.code == "200"
 
     JSON.parse(resp.body)
-  rescue JSON::ParserError, BadStatusError => error
-    raise BadResponseError.new('service returned an invalid response', api.name)
+  rescue JSON::ParserError, BadStatusError
+    raise BadResponseError.new('api returned an invalid response', api.name)
+  rescue Net::ReadTimeout
+    raise BadResponseError.new('service timed out', api.name)
   end
 
   class BadStatusError < StandardError; end
