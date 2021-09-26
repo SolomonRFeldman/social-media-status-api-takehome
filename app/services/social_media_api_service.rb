@@ -1,33 +1,39 @@
 
 class SocialMediaApiService
   class << self
-    SOCIAL_MEDIA_APIS = [
-      { name: :twitter, uri: 'https://takehome.io/twitter'},
-      { name: :facebook, uri: 'https://takehome.io/facebook'},
-      { name: :instagram, uri: 'https://takehome.io/instagram'}
-    ]
+    delegate :index, to: :new
+  end
 
-    def index
-      response = {}
-      SOCIAL_MEDIA_APIS.each do |api|
-        response[api[:name]] = fetch_api(api)
-      end
-      response
-    end
+  @@social_media_apis = [
+    OpenStruct.new(name: :twitter, uri: 'https://takehome.io/twitter'),
+    OpenStruct.new(name: :facebook, uri: 'https://takehome.io/facebook'),
+    OpenStruct.new(name: :instagram, uri: 'https://takehome.io/instagram')
+  ]
 
-    private
+  delegate :social_media_apis, to: :class
 
-    def fetch_api(api)
-      resp = Net::HTTP.get_response(URI(api[:uri]))
-      resp.code == "200" ? JSON.parse(resp.body) : raise_bad_response(api[:name])
-    rescue JSON::ParserError => error
-      raise_bad_response(api[:name])
-    end
-
-    def raise_bad_response(api_name)
-      raise(BadResponseError.new('api returned an invalid response', api_name))
+  def index
+    social_media_apis.each_with_object({}) do |api, response|
+      response[api.name] = fetch_api(api)
     end
   end
+
+  private
+
+  def social_media_apis
+    @@social_media_apis
+  end
+
+  def fetch_api(api)
+    resp = Net::HTTP.get_response(URI(api.uri))
+    raise BadStatusError.new unless resp.code == "200"
+
+    JSON.parse(resp.body)
+  rescue JSON::ParserError, BadStatusError => error
+    raise BadResponseError.new('service returned an invalid response', api.name)
+  end
+
+  class BadStatusError < StandardError; end
 
   class BadResponseError < StandardError
     attr_reader :api_name
