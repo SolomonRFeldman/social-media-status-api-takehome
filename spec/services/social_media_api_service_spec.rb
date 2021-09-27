@@ -53,24 +53,24 @@ RSpec.describe SocialMediaApiService, :type => :service do
     before do
       stub_request(:get, /facebook/)
         .with(headers: { 'Accept'=>'*/*','User-Agent'=>'Ruby' })
-        .to_return(status: 408, body: '', headers: {})
+        .to_raise(Net::ReadTimeout)
     end
 
-    it "raises a SocialMediaApiService::BadResponseError error" do
-      expect{SocialMediaApiService.index}.to raise_error(SocialMediaApiService::BadResponseError)
+    it "raises a SocialMediaApiService::TimeoutError error" do
+      expect{SocialMediaApiService.index}.to raise_error(SocialMediaApiService::TimeoutError)
     end
 
-    it "contains a message in the SocialMediaApiService::BadResponseError error" do
+    it "contains a message in the SocialMediaApiService::TimeoutError error" do
       SocialMediaApiService.index
 
-    rescue SocialMediaApiService::BadResponseError => error
-      expect(error.message).to eq('api returned an invalid response')
+    rescue SocialMediaApiService::TimeoutError => error
+      expect(error.message).to eq('service timed out')
     end
 
-    it "contains the failed api name in the SocialMediaApiService::BadResponseError error" do
+    it "contains the failed api name in the SocialMediaApiService::TimeoutError error" do
       SocialMediaApiService.index
 
-    rescue SocialMediaApiService::BadResponseError => error
+    rescue SocialMediaApiService::TimeoutError => error
       expect(error.api_name).to eq(:facebook)
     end
   end
