@@ -54,6 +54,27 @@ describe 'Applicaton Features', :type => :feature do
 
   end
 
+  context "when index is requested with a timed out API call" do
+    before do
+      stub_request(:get, /facebook/)
+        .with(headers: { 'Accept'=>'*/*','User-Agent'=>'Ruby' })
+        .to_raise(Net::ReadTimeout)
+      page.driver.submit :get, '/', {}
+    end
+
+    it "returns a 500 code" do
+      expect(page.status_code).to eq(500)
+    end
+
+    it "returns a JSON error response specifying which service failed" do
+      parsed_data = JSON.parse(page.body)
+      expect(parsed_data["error"]["service_name"]).to eq("facebook")
+      expect(parsed_data["error"]["message"]).to eq('service timed out')
+      expect(parsed_data["error"]["type"]).to eq('timeout')
+    end
+
+  end
+
   context "when index is requested with a bad API call" do
     before do
       stub_request(:get, /facebook/)
