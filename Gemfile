@@ -26,6 +26,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 5.0', '>= 5.0.2'
   gem 'webmock', '~> 3.14'
   gem 'capybara', '~> 3.35', '>= 3.35.3'
+  gem 'rubocop', '~> 1.21', require: false
 end
 
 group :development do
