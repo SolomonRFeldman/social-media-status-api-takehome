@@ -10,8 +10,6 @@ class SocialMediaApiService
     OpenStruct.new(name: :instagram, uri: 'https://takehome.io/instagram')
   ]
 
-  delegate :social_media_apis, to: :class
-
   def index
     social_media_apis.each_with_object({}) do |api, response|
       response[api.name] = fetch_api(api)
