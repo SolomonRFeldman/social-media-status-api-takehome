@@ -32,20 +32,18 @@ RSpec.describe SocialMediaApiService, :type => :service do
       )
   end
   context "when index is called on the class with valid responding endpoints" do
-    before do
-      @response = SocialMediaApiService.index
-    end
+    let(:subject) { SocialMediaApiService.index }
 
     it "returns a response with a hash containing the twitter, facebook, and instagram keys" do
-      expect(@response).to include(:twitter)
-      expect(@response).to include(:facebook)
-      expect(@response).to include(:instagram)
+      expect(subject).to include(:twitter)
+      expect(subject).to include(:facebook)
+      expect(subject).to include(:instagram)
     end
 
     it "returns a response with a hash containing valid twitter, facebook, and instagram data" do
-      expect(@response[:twitter]).to eq(valid_twitter_data)
-      expect(@response[:facebook]).to eq(valid_facebook_data)
-      expect(@response[:instagram]).to eq(valid_instagram_data)
+      expect(subject[:twitter]).to eq(valid_twitter_data)
+      expect(subject[:facebook]).to eq(valid_facebook_data)
+      expect(subject[:instagram]).to eq(valid_instagram_data)
     end
   end
 
