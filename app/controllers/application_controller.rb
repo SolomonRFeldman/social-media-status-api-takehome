@@ -14,13 +14,13 @@ class ApplicationController < ActionController::API
 
   def internal_server_error(error, type)
     {
-      json: { 
-        error: { 
-          service_name: error.service_name, 
-          message: error.message, 
+      json: {
+        error: {
+          service_name: error.service_name,
+          message: error.message,
           type: type
-        } 
-      }, 
+        }
+      },
       status: 500
     }
   end

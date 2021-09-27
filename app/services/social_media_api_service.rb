@@ -1,4 +1,3 @@
-
 class SocialMediaApiService
   class << self
     delegate :index, to: :new
@@ -29,10 +28,10 @@ class SocialMediaApiService
     request.read_timeout = 5.0 / 3
     request.max_retries = 0
     request.use_ssl = true
- 
+
     resp = request.request_get(uri.path)
 
-    raise BadStatusError.new unless resp.code == "200"
+    raise BadStatusError.new unless resp.code == '200'
 
     JSON.parse(resp.body)
   rescue JSON::ParserError, BadStatusError
@@ -45,6 +44,7 @@ class SocialMediaApiService
 
   class ServiceError < StandardError
     attr_reader :service_name
+
     def initialize(message, service_name)
       super(message)
       @service_name = service_name
@@ -53,5 +53,4 @@ class SocialMediaApiService
 
   class TimeoutError < ServiceError; end
   class BadResponseError < ServiceError; end
-
 end
