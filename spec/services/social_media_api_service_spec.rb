@@ -67,11 +67,11 @@ RSpec.describe SocialMediaApiService, :type => :service do
       expect(error.message).to eq('service timed out')
     end
 
-    it "contains the failed api name in the SocialMediaApiService::TimeoutError error" do
+    it "contains the failed service name in the SocialMediaApiService::TimeoutError error" do
       SocialMediaApiService.index
 
     rescue SocialMediaApiService::TimeoutError => error
-      expect(error.api_name).to eq(:facebook)
+      expect(error.service_name).to eq(:facebook)
     end
   end
 
@@ -90,14 +90,14 @@ RSpec.describe SocialMediaApiService, :type => :service do
       SocialMediaApiService.index
 
     rescue SocialMediaApiService::BadResponseError => error
-      expect(error.message).to eq('api returned an invalid response')
+      expect(error.message).to eq('service returned a bad response')
     end
 
-    it "contains the failed api name in the SocialMediaApiService::BadResponseError error" do
+    it "contains the failed service name in the SocialMediaApiService::BadResponseError error" do
       SocialMediaApiService.index
 
     rescue SocialMediaApiService::BadResponseError => error
-      expect(error.api_name).to eq(:facebook)
+      expect(error.service_name).to eq(:facebook)
     end
   end
 
@@ -116,14 +116,14 @@ RSpec.describe SocialMediaApiService, :type => :service do
       SocialMediaApiService.index
 
     rescue SocialMediaApiService::BadResponseError => error
-      expect(error.message).to eq('api returned an invalid response')
+      expect(error.message).to eq('service returned a bad response')
     end
 
-    it "contains the failed api name in the SocialMediaApiService::BadResponseError error" do
+    it "contains the failed service name in the SocialMediaApiService::BadResponseError error" do
       SocialMediaApiService.index
 
     rescue SocialMediaApiService::BadResponseError => error
-      expect(error.api_name).to eq(:facebook)
+      expect(error.service_name).to eq(:facebook)
     end
   end
 

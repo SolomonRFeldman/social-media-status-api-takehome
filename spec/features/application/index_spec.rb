@@ -70,11 +70,11 @@ describe 'Applicaton Features', :type => :feature do
       expect(page.status_code).to eq(500)
     end
 
-    it "returns a JSON error response specifying which api failed" do
+    it "returns a JSON error response specifying which service failed" do
       parsed_data = JSON.parse(page.body)
-      expect(parsed_data["error"]["api_name"]).to eq("facebook")
-      expect(parsed_data["error"]["message"]).to eq('api returned an invalid response')
-      expect(parsed_data["error"]["type"]).to eq('invalid response')
+      expect(parsed_data["error"]["service_name"]).to eq("facebook")
+      expect(parsed_data["error"]["message"]).to eq('service returned a bad response')
+      expect(parsed_data["error"]["type"]).to eq('bad response')
     end
 
   end

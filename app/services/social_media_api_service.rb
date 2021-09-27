@@ -36,7 +36,7 @@ class SocialMediaApiService
 
     JSON.parse(resp.body)
   rescue JSON::ParserError, BadStatusError
-    raise BadResponseError.new('api returned an invalid response', api.name)
+    raise BadResponseError.new('service returned a bad response', api.name)
   rescue Net::ReadTimeout
     raise TimeoutError.new('service timed out', api.name)
   end
@@ -44,10 +44,10 @@ class SocialMediaApiService
   class BadStatusError < StandardError; end
 
   class ServiceError < StandardError
-    attr_reader :api_name
-    def initialize(message, api_name)
+    attr_reader :service_name
+    def initialize(message, service_name)
       super(message)
-      @api_name = api_name
+      @service_name = service_name
     end
   end
 

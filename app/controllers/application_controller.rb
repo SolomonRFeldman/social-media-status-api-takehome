@@ -3,9 +3,9 @@ class ApplicationController < ActionController::API
     render(
       json: { 
         error: { 
-          api_name: error.api_name, 
+          service_name: error.service_name, 
           message: error.message, 
-          type: 'invalid response'
+          type: 'bad response'
         } 
       }, 
       status: 500
